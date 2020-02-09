@@ -2,7 +2,6 @@ use crate::ChannelMessage;
 use crate::ChannelMessage::Disconnect;
 use crate::TxChannel;
 use serde::{Deserialize, Serialize};
-use std::io::Read;
 use std::io::{BufRead, BufReader};
 use std::net::TcpStream;
 
@@ -19,7 +18,10 @@ impl Client {
 
         if let Ok(message) = serde_json::from_str::<ClientMessage>(msg) {
             Some(match message {
-                ClientMessage::Message(payload) => BroadcastMessage(payload),
+                ClientMessage::Message(payload) => BroadcastMessage {
+                    sender: self.name.clone(),
+                    content: payload,
+                },
                 ClientMessage::Connect(payload) => {
                     self.name = payload;
                     self.is_connected = true;

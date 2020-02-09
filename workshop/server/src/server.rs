@@ -1,8 +1,9 @@
 use crate::client::Client;
+use crate::client::ClientMessage;
 use crate::ChannelMessage;
 use std::collections::HashMap;
-use std::io::BufWriter;
 use std::io::Write;
+use std::net::Shutdown;
 use std::net::{TcpListener, TcpStream};
 use std::sync::mpsc;
 
@@ -44,25 +45,67 @@ impl Server {
         }
     }
 
-    fn broadcast_message(clients: &mut HashMap<String, (String, TcpStream)>, msg: &String) {
-        for (_, v) in clients.iter_mut() {
-            v.1.write((serde_json::to_string(msg).unwrap_or("{}".to_owned()) + "\n").as_bytes())
-                .unwrap();
+    fn broadcast_message(
+        sender: &String,
+        clients: &mut HashMap<String, (String, TcpStream)>,
+        msg: &String,
+    ) {
+        for (_, client) in clients.iter_mut() {
+            if &client.0 == sender {
+                continue;
+            }
+            client
+                .1
+                .write(
+                    (serde_json::to_string(&ClientMessage::Message(format!(
+                        "{} => {}",
+                        sender, msg
+                    )))
+                    .unwrap_or("{}".to_owned())
+                        + "\n")
+                        .as_bytes(),
+                )
+                .expect("Can't write on client socket");
         }
+    }
+
+    fn send_private_msg(client: &mut TcpStream, sender: &String, msg: &String) {
+        client
+            .write(
+                (serde_json::to_string(&ClientMessage::Message(format!(
+                    "Private: {} => {}",
+                    sender, msg
+                )))
+                .unwrap_or("{}".to_owned())
+                    + "\n")
+                    .as_bytes(),
+            )
+            .expect("Can't write on client socket");
     }
 
     fn handle_client_messages(&mut self) {
         for msg in (&self.rx_channel).iter() {
             match msg {
                 ChannelMessage::NewClient(client) => {
+                    if self.clients.contains_key(&client.0) {
+                        println!("{} already exists sorry :/", client.0);
+                        client.1.shutdown(Shutdown::Both).unwrap();
+                        continue;
+                    }
                     println!("New client connected => {}", client.0);
                     self.clients.insert(client.0.clone(), (client.0, client.1));
                 }
                 ChannelMessage::PrivateMessage { recipient, content } => {
-                    println!("Sending private message");
+                    if let Some(recipient_sock) = self.clients.get_mut(&recipient) {
+                        Server::send_private_msg(
+                            &mut recipient_sock.1,
+                            &"Server".to_owned(),
+                            &content,
+                        );
+                    }
                 }
-                ChannelMessage::BroadcastMessage(msg) => {
-                    Server::broadcast_message(&mut self.clients, &msg);
+                ChannelMessage::BroadcastMessage { sender, content } => {
+                    Server::broadcast_message(&sender, &mut self.clients, &content);
                 }
                 ChannelMessage::Disconnect(client) => {
                     println!("Client {} disconnected", client);

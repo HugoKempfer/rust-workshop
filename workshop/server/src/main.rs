@@ -14,7 +14,7 @@ type TxChannel = std::sync::mpsc::Sender<ChannelMessage>;
 ///Internal inter-thread message passing
 pub enum ChannelMessage {
     NewClient((String, TcpStream)),
-    BroadcastMessage(String),
+    BroadcastMessage { sender: String, content: String },
     PrivateMessage { recipient: String, content: String },
     Disconnect(String),
 }
