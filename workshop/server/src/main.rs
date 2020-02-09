@@ -4,14 +4,12 @@ extern crate serde_json;
 mod client;
 mod server;
 
-use crate::client::Client;
 use server::Server;
 use std::net::TcpStream;
 
 const DEFAULT_PORT: u16 = 5000;
 
 type TxChannel = std::sync::mpsc::Sender<ChannelMessage>;
-type RxChannel = std::sync::mpsc::Receiver<ChannelMessage>;
 
 ///Internal inter-thread message passing
 pub enum ChannelMessage {

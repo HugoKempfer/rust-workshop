@@ -1,6 +1,8 @@
 use crate::client::Client;
 use crate::ChannelMessage;
 use std::collections::HashMap;
+use std::io::BufWriter;
+use std::io::Write;
 use std::net::{TcpListener, TcpStream};
 use std::sync::mpsc;
 
@@ -42,16 +44,30 @@ impl Server {
         }
     }
 
+    fn broadcast_message(clients: &mut HashMap<String, (String, TcpStream)>, msg: &String) {
+        for (_, v) in clients.iter_mut() {
+            v.1.write((serde_json::to_string(msg).unwrap_or("{}".to_owned()) + "\n").as_bytes())
+                .unwrap();
+        }
+    }
+
     fn handle_client_messages(&mut self) {
-        for msg in self.rx_channel.iter() {
+        for msg in (&self.rx_channel).iter() {
             match msg {
                 ChannelMessage::NewClient(client) => {
                     println!("New client connected => {}", client.0);
                     self.clients.insert(client.0.clone(), (client.0, client.1));
                 }
-                ChannelMessage::PrivateMessage(msg) => {}
-                ChannelMessage::BroadcastMessage(msg) => {}
-                ChannelMessage::Disconnect(client) => {}
+                ChannelMessage::PrivateMessage { recipient, content } => {
+                    println!("Sending private message");
+                }
+                ChannelMessage::BroadcastMessage(msg) => {
+                    Server::broadcast_message(&mut self.clients, &msg);
+                }
+                ChannelMessage::Disconnect(client) => {
+                    println!("Client {} disconnected", client);
+                    self.clients.remove(&client);
+                }
             }
         }
     }
