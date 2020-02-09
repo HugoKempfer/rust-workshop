@@ -1,11 +1,13 @@
-use crate::client::Client;
-use crate::client::ClientMessage;
-use crate::ChannelMessage;
-use std::collections::HashMap;
-use std::io::Write;
-use std::net::Shutdown;
-use std::net::{TcpListener, TcpStream};
-use std::sync::mpsc;
+use crate::{
+    client::{Client, ClientMessage},
+    ChannelMessage,
+};
+use std::{
+    collections::HashMap,
+    io::Write,
+    net::{Shutdown, TcpListener, TcpStream},
+    sync::mpsc,
+};
 
 pub struct Server {
     clients: HashMap<String, (String, TcpStream)>,
@@ -21,13 +23,9 @@ impl Server {
         let (tx, rx) = mpsc::channel::<ChannelMessage>();
 
         match TcpListener::bind(&addr) {
-            Ok(socket) => Ok(Self {
-                socket,
-                clients: HashMap::new(),
-                rx_channel: rx,
-                tx_channel: tx,
-                addr,
-            }),
+            Ok(socket) => {
+                Ok(Self { socket, clients: HashMap::new(), rx_channel: rx, tx_channel: tx, addr })
+            }
             Err(msg) => Err(msg.to_string()),
         }
     }
@@ -93,7 +91,12 @@ impl Server {
                         continue;
                     }
                     println!("New client connected => {}", client.0);
-                    self.clients.insert(client.0.clone(), (client.0, client.1));
+                    self.clients.insert(client.0.clone(), (client.0.clone(), client.1));
+                    Server::broadcast_message(
+                        &"Infos: ".to_owned(),
+                        &mut self.clients,
+                        &format!("user {} connected.", client.0),
+                    );
                 }
                 ChannelMessage::PrivateMessage { recipient, content } => {
                     if let Some(recipient_sock) = self.clients.get_mut(&recipient) {
@@ -110,6 +113,11 @@ impl Server {
                 ChannelMessage::Disconnect(client) => {
                     println!("Client {} disconnected", client);
                     self.clients.remove(&client);
+                    Server::broadcast_message(
+                        &"Infos: ".to_owned(),
+                        &mut self.clients,
+                        &format!("user {} disconnected.", client),
+                    );
                 }
             }
         }
