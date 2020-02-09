@@ -1,0 +1,5 @@
+use_small_heuristics = "Max"
+merge_imports = true
+overflow_delimited_expr = true
+# report_todo = "Always"
+# report_fixme = "Always"
