@@ -30,6 +30,21 @@ templates and usages of `wasm-pack`.
 [tutorials]: https://rustwasm.github.io/docs/wasm-pack/tutorials/index.html
 [template-docs]: https://rustwasm.github.io/docs/wasm-pack/tutorials/npm-browser-packages/index.html
 
+### Add wasm32 target
+rustup target add wasm32-unknown-unknown
+
+### Install wasm-pack
+cargo install wasm-pack
+
+### 🛠️ Build with `wasm-pack build`
+rustup run nightly wasm-pack build 
+
+### Build with `cargo`
+cargo build 
+
+### Install node dependencies and run
+cd www && install && npm run start
+
 ## 🚴 Usage
 
 ### 🐑 Use `cargo generate` to Clone this Template
