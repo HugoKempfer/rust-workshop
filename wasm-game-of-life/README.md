@@ -12,15 +12,15 @@
 
 [**📚 Read this template tutorial! 📚**]
 
-This template is designed for compiling Rust libraries into WebAssembly.
+Run these commands ! 
 
 
-### 🗝 Add wasm32 target
+### 🗝 Add `wasm32 target`
 ```
 rustup target add wasm32-unknown-unknown
 ```
 
-### 🏗 Install wasm-pack
+### 🏗 Install `wasm-pack`
 ```
 cargo install wasm-pack
 ```
@@ -35,7 +35,7 @@ rustup run nightly wasm-pack build
 cargo build 
 ```
 
-### 🛎 Install node dependencies and run
+### 🛎 Install `node` dependencies and run
 ```
 cd www && npm install && npm run start
 ```
