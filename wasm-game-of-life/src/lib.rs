@@ -105,20 +105,7 @@ impl Universe {
     pub fn next_step(&mut self) {
         let mut new_cell_vec = self.cells.clone();
 
-        for y in 0..self.height {
-            for x in 0..self.width {
-                let idx = self.get_cell_index(y, x);
-                let cell = self.cells[idx];
-                let nb_live_surrounding_cells = self.get_nb_live_surrounding_cells(y, x);
-                let new_cell: Cell = match (cell, nb_live_surrounding_cells) {
-                    (Cell::DEATH, 3) => Cell::LIVE,
-                    (Cell::LIVE, 2) | (Cell::LIVE, 3) => Cell::LIVE,
-                    (Cell::LIVE, x) if x < 2 || x > 3 => Cell::DEATH,
-                    (otherwise, _x) => otherwise,
-                };
-                new_cell_vec[idx] = new_cell;
-            }
-        }
+       
         self.cells = new_cell_vec;
     }
 }
