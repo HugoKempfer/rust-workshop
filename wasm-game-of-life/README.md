@@ -38,3 +38,9 @@ cargo build
 ```
 cd www && npm install && npm run start
 ```
+
+## Game of life rules
+
+- Si une cellule morte a 3 cellules voisines vivantes alors elle devient vivante.
+- Si une cellule vivante a 2 ou 3 cellules voisine vivante alors elle reste vivante.
+- Si une cellule vivante a moins de 2 ou plus de 3 cellules voisines vivante alors elle devient morte.
