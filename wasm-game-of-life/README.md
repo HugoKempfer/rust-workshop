@@ -1,19 +1,18 @@
 <div align="center">
 
-  <h1><code>wasm-pack-template-game-of-life</code></h1>
+  <h1><code>wasm-pack-game-of-life</code></h1>
 
-  <strong>A template for kick starting a Rust and WebAssembly project </strong>
+  <strong>A project for kick starting Rust and WebAssembly </strong>
 
-  <sub>Built with 🦀🕸 by <a href="https://rustwasm.github.io/">The Rust and WebAssembly Working Group</a></sub>
+  <sub> <a href="https://rustwasm.github.io/"> Rust and WebAssembly Working Group</a></sub>
 
 </div>
 
 ## About
 
-[**📚 Read this template tutorial! 📚**]
+[**📚 Clone this repo ! 📚**]
 
 Run these commands ! 
-
 
 ### 🗝 Add `wasm32 target`
 ```
