@@ -31,16 +31,24 @@ templates and usages of `wasm-pack`.
 [template-docs]: https://rustwasm.github.io/docs/wasm-pack/tutorials/npm-browser-packages/index.html
 
 ### Add wasm32 target
+```
 rustup target add wasm32-unknown-unknown
+```
 
 ### Install wasm-pack
+```
 cargo install wasm-pack
+```
 
-### 🛠️ Build with `wasm-pack build`
+### 🛠️ Build with `wasm-pack`
+```
 rustup run nightly wasm-pack build 
+```
 
-### Build with `cargo`
+### 🛠️ Build with `cargo`
+``` 
 cargo build 
+```
 
 ### Install node dependencies and run
 cd www && install && npm run start
