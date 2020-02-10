@@ -10,7 +10,7 @@
 
 ## About
 
-[**📚 Read this template tutorial! 📚**][template-docs]
+[**📚 Read this template tutorial! 📚**]
 
 This template is designed for compiling Rust libraries into WebAssembly.
 
