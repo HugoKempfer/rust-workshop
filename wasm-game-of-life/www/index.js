@@ -3,24 +3,18 @@ import { memory } from "wasm-game-of-life/wasm_game_of_life_bg";
 // import * as wasm from "wasm-game-of-life";
 const CELL_SIZE = 5; // px
 const DEAD_COLOR = "#FFFFFF";
-// const DEAD_COLOR = "#000000";
 const ALIVE_COLOR = "#000000";
+
 var universe = Universe.new(64 * 3, 64 * 3);
 var width = universe.width();
 var height = universe.height();
-console.log(width);
-console.log(height);
+
 var canvas = document.getElementById('game-of-life-canvas');
 canvas.width = document.body.clientWidth; //document.width is obsolet
 canvas.height = document.body.clientHeight; //document.height is obsolete
-  if (canvas.getContext) {
-    var ctx = canvas.getContext('2d');
-  }
-// document.getElementById("nextMove").addEventListener("click", nextStep());
-
-
-
-
+if (canvas.getContext) {
+  var ctx = canvas.getContext('2d');
+}
 
 const fps = new class {
   constructor() {
@@ -56,23 +50,16 @@ const fps = new class {
 
     // Render the statistics.
     this.fps.textContent = `
-Frames per Second:
-         latest = ${Math.round(fps)}
-avg of last 100 = ${Math.round(mean)}
-min of last 100 = ${Math.round(min)}
-max of last 100 = ${Math.round(max)}
+        Frames per Second:
+             latest = ${Math.round(fps)}
+        avg of last 100 = ${Math.round(mean)}
+        min of last 100 = ${Math.round(min)}
+        max of last 100 = ${Math.round(max)}
 `.trim();
   }
 };
 
 
-
-const nextStep = () =>  {
-    fps.render();
-    universe.next_step();
-    drawCells();
-    animationId = requestAnimationFrame(nextStep);
-}
 
 // draw();
 const getIndex = (y, x) => {
@@ -103,5 +90,12 @@ function drawCells() {
 
   ctx.stroke();
 };
-// drawCells();
+
+const nextStep = () =>  {
+    fps.render();
+    universe.next_step();
+    drawCells();
+    animationId = requestAnimationFrame(nextStep);
+}
+
 nextStep()
